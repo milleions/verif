@@ -1,0 +1,57 @@
+[02-May-2025 06:59:46 UTC] PHP Warning:  Undefined array key "REQUEST_METHOD" in /Users/kinsleykeli/Sites/milleionskob/bg_remove/upload.php on line 9
+[02-May-2025 11:36:29 UTC] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in /Users/kinsleykeli/Sites/milleionskob/bg_remove/upload.php on line 37
+[03-May-2025 20:29:53 UTC] PHP Fatal error:  Maximum execution time of 60 seconds exceeded in /Users/kinsleykeli/Sites/milleionskob/bg_remove/upload.php on line 134
+[04-May-2025 00:01:27 UTC] PHP Fatal error:  Maximum execution time of 60 seconds exceeded in /Users/kinsleykeli/Sites/milleionskob/bg_remove/upload.php on line 190
+[06-May-2025 15:42:43 UTC] PHP Warning:  require_once(/Users/kinsleykeli/Sites/milleionskob/bg_remove/inc/functions.php): Failed to open stream: No such file or directory in /Users/kinsleykeli/Sites/milleionskob/bg_remove/upload.php on line 2
+[06-May-2025 15:42:43 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/Users/kinsleykeli/Sites/milleionskob/bg_remove/inc/functions.php' (include_path='.:/opt/homebrew/Cellar/php@8.3/8.3.20/share/php@8.3/pear') in /Users/kinsleykeli/Sites/milleionskob/bg_remove/upload.php:2
+Stack trace:
+#0 {main}
+  thrown in /Users/kinsleykeli/Sites/milleionskob/bg_remove/upload.php on line 2
+[06-May-2025 15:43:21 UTC] PHP Warning:  require_once(/Users/kinsleykeli/Sites/milleionskob/bg_remove../inc/functions.php): Failed to open stream: No such file or directory in /Users/kinsleykeli/Sites/milleionskob/bg_remove/upload.php on line 2
+[06-May-2025 15:43:21 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/Users/kinsleykeli/Sites/milleionskob/bg_remove../inc/functions.php' (include_path='.:/opt/homebrew/Cellar/php@8.3/8.3.20/share/php@8.3/pear') in /Users/kinsleykeli/Sites/milleionskob/bg_remove/upload.php:2
+Stack trace:
+#0 {main}
+  thrown in /Users/kinsleykeli/Sites/milleionskob/bg_remove/upload.php on line 2
+[06-May-2025 16:59:22 UTC] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function generateUniquePassportNumber(), 0 passed in /Users/kinsleykeli/Sites/milleionskob/bg_remove/upload.php on line 30 and exactly 1 expected in /Users/kinsleykeli/Sites/milleionskob/inc/functions.php:206
+Stack trace:
+#0 /Users/kinsleykeli/Sites/milleionskob/bg_remove/upload.php(30): generateUniquePassportNumber()
+#1 {main}
+  thrown in /Users/kinsleykeli/Sites/milleionskob/inc/functions.php on line 206
+[06-May-2025 16:59:28 UTC] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function generateUniquePassportNumber(), 0 passed in /Users/kinsleykeli/Sites/milleionskob/bg_remove/upload.php on line 30 and exactly 1 expected in /Users/kinsleykeli/Sites/milleionskob/inc/functions.php:206
+Stack trace:
+#0 /Users/kinsleykeli/Sites/milleionskob/bg_remove/upload.php(30): generateUniquePassportNumber()
+#1 {main}
+  thrown in /Users/kinsleykeli/Sites/milleionskob/inc/functions.php on line 206
+[06-May-2025 16:59:29 UTC] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function generateUniqueSerialNumber(), 0 passed in /Users/kinsleykeli/Sites/milleionskob/bg_remove/upload.php on line 34 and exactly 1 expected in /Users/kinsleykeli/Sites/milleionskob/inc/functions.php:194
+Stack trace:
+#0 /Users/kinsleykeli/Sites/milleionskob/bg_remove/upload.php(34): generateUniqueSerialNumber()
+#1 {main}
+  thrown in /Users/kinsleykeli/Sites/milleionskob/inc/functions.php on line 194
+[06-May-2025 17:00:25 UTC] PHP Warning:  require_once(/Users/kinsleykeli/Sites/milleionskob/bg_remove/db.php): Failed to open stream: No such file or directory in /Users/kinsleykeli/Sites/milleionskob/bg_remove/upload.php on line 2
+[06-May-2025 17:00:25 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/Users/kinsleykeli/Sites/milleionskob/bg_remove/db.php' (include_path='.:/opt/homebrew/Cellar/php@8.3/8.3.20/share/php@8.3/pear') in /Users/kinsleykeli/Sites/milleionskob/bg_remove/upload.php:2
+Stack trace:
+#0 {main}
+  thrown in /Users/kinsleykeli/Sites/milleionskob/bg_remove/upload.php on line 2
+[06-May-2025 17:01:04 UTC] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function generateUniquePassportNumber(), 0 passed in /Users/kinsleykeli/Sites/milleionskob/bg_remove/upload.php on line 31 and exactly 1 expected in /Users/kinsleykeli/Sites/milleionskob/inc/functions.php:206
+Stack trace:
+#0 /Users/kinsleykeli/Sites/milleionskob/bg_remove/upload.php(31): generateUniquePassportNumber()
+#1 {main}
+  thrown in /Users/kinsleykeli/Sites/milleionskob/inc/functions.php on line 206
+[06-May-2025 17:01:08 UTC] PHP Fatal error:  Uncaught ArgumentCountError: Too few arguments to function generateUniqueSerialNumber(), 0 passed in /Users/kinsleykeli/Sites/milleionskob/bg_remove/upload.php on line 35 and exactly 1 expected in /Users/kinsleykeli/Sites/milleionskob/inc/functions.php:194
+Stack trace:
+#0 /Users/kinsleykeli/Sites/milleionskob/bg_remove/upload.php(35): generateUniqueSerialNumber()
+#1 {main}
+  thrown in /Users/kinsleykeli/Sites/milleionskob/inc/functions.php on line 194
+[06-May-2025 17:37:49 UTC] PHP Warning:  Undefined array key "signature" in /Users/kinsleykeli/Sites/milleionskob/bg_remove/upload.php on line 253
+[06-May-2025 17:37:49 UTC] PHP Warning:  Trying to access array offset on null in /Users/kinsleykeli/Sites/milleionskob/bg_remove/upload.php on line 254
+[06-May-2025 17:37:49 UTC] PHP Deprecated:  basename(): Passing null to parameter #1 ($path) of type string is deprecated in /Users/kinsleykeli/Sites/milleionskob/bg_remove/upload.php on line 254
+[06-May-2025 17:37:49 UTC] PHP Warning:  Trying to access array offset on null in /Users/kinsleykeli/Sites/milleionskob/bg_remove/upload.php on line 260
+[06-May-2025 17:37:49 UTC] PHP Deprecated:  move_uploaded_file(): Passing null to parameter #1 ($from) of type string is deprecated in /Users/kinsleykeli/Sites/milleionskob/bg_remove/upload.php on line 260
+[06-May-2025 18:53:11 UTC] PHP Parse error:  syntax error, unexpected double-quoted string "ExportFileName", expecting "]" in /Users/kinsleykeli/Sites/milleionskob/bg_remove/upload.php on line 212
+[08-May-2025 14:15:03 UTC] PHP Fatal error:  Maximum execution time of 60 seconds exceeded in /Users/kinsleykeli/Sites/milleionskob/bg_remove/upload.php on line 313
+[12-May-2025 18:10:29 UTC] PHP Warning:  Undefined array key "background" in /Users/kinsleykeli/Sites/milleionskob/bg_remove/upload.php on line 232
+[12-May-2025 18:10:29 UTC] PHP Deprecated:  strtoupper(): Passing null to parameter #1 ($string) of type string is deprecated in /Users/kinsleykeli/Sites/milleionskob/bg_remove/upload.php on line 232
+[21-May-2025 19:54:20 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function direname() in /Users/kinsleykeli/Sites/milleionskob/bg_remove/passport.php:408
+Stack trace:
+#0 {main}
+  thrown in /Users/kinsleykeli/Sites/milleionskob/bg_remove/passport.php on line 408

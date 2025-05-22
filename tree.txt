@@ -1,0 +1,35 @@
+.
+├── barcode
+├── barcodeSettings
+│   └── code128b.bc
+├── crop_face_id_style.py
+├── crop_signature.py
+├── final
+├── final_templates
+├── inc
+│   ├── db.php
+│   └── functions.php
+├── json2.js
+├── output
+├── outputs
+├── passport.php
+├── php_errors.log
+├── process_passport.jsx
+├── psd
+│   ├── passport_IPAD.psd
+│   └── templates
+│       ├── background
+│       │   ├── background_1.jpg
+│       │   ├── background_2.jpg
+│       │   └── background_3.jpg
+│       ├── passport_cut_prep.psd
+│       ├── passport_photo.psd
+│       └── passport_scan.psd
+├── saaq.php
+├── sig
+├── tree.txt
+├── tsconfig.json
+├── uploads
+└── user_data.json
+
+13 directories, 20 files
