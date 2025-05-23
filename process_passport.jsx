@@ -5,6 +5,9 @@ var scriptDir = File($.fileName).parent;
 var jsonFile = new File(scriptDir + "/user_data.json");
 var userData = readJSON(jsonFile);
 var psdFile = new File(scriptDir.parent + "/assets/psd/passport_IPAD.psd");
+var psdScan = new File(scriptDir.parent + "/assets/psd/templates/passport_scan.psd");
+var psdPhoto = new File(scriptDir.parent + "/assets/psd/templates/passport_photo.psd");
+var psdCut = new File(scriptDir.parent + "/assets/psd/templates/passport_cut_prep.psd");
 
 var photoFile = new File(scriptDir.parent + "/assets/final/" + userData.PhotoFileName);
 var exportFileName = userData.ExportFileName || "passport_output.png";
@@ -52,6 +55,13 @@ function replaceSmartObjectContents(layer, filePath) {
     desc.putPath(charIDToTypeID("null"), new File(filePath));
     executeAction(idplacedLayerReplaceContents, desc, DialogModes.NO);
 }
+function replaceSmartObjectContentsPhoto(layer, filePath) {
+    var idplacedLayerReplaceContents = stringIDToTypeID("placedLayerReplaceContents");
+    var desc = new ActionDescriptor();
+    desc.putPath(charIDToTypeID("null"), new File(filePath));
+    executeAction(idplacedLayerReplaceContents, desc, DialogModes.NO);
+}
+
 
 // Load data
 
@@ -244,11 +254,11 @@ doc.close(SaveOptions.DONOTSAVECHANGES);
 //#target photoshop
 
 // Read user data
-var exportTemplateFileName = userData.ExportTemplateFileName;
+//var exportTemplateFileName = userData.ExportTemplateFileName;
 
 
 // Define paths
-var templateMap = {
+/*var templateMap = {
     "PASSPORT_SCAN": "passport_scan.psd",
     "PASSPORT_PHOTO": "passport_photo.psd",
     "PASSPORT_CUT_PREP": "passport_cut_prep.psd"
@@ -257,9 +267,9 @@ var templateMap = {
 var templateFile = new File("/Users/kinsleykeli/Sites/milleionskob/assets/psd/templates/" + templateMap[userData.Template]);
 if (!templateFile.exists) {
     throw new Error("Template file not found: " + templateFile.fsName);
-}
+}*/
 
-app.open(templateFile);
+app.open(psdScan);
 var doc = app.activeDocument;
 
 // Replace 'generated_passport' layer
@@ -273,23 +283,74 @@ passportLayer.visible = true;
 doc.activeLayer = passportLayer;
 
 // Replace contents
-var passportImage = new File(scriptDir.parent + "/assets/output/" + userData.ExportFileName);
-replaceSmartObjectContents(passportLayer, passportImage.fsName);
+var passportImageScan = new File(scriptDir.parent + "/assets/output/" + userData.ExportFileName);
+replaceSmartObjectContents(passportLayer, passportImageScan.fsName);
 
-// If template is 'passport_photo', replace 'background' layer
-if (userData.Template === "passport_photo") {
-    var backgroundLayer = doc.artLayers.getByName("background");
-    if (!backgroundLayer) {
-        throw new Error("Layer 'background' not found in template.");
-    }
 
-    // Ensure the layer is visible and active
-    backgroundLayer.visible = true;
-    doc.activeLayer = backgroundLayer;
-
-    var backgroundImage = new File("/Users/kinsleykeli/Sites/milleionskob/assets/psd/templates/background/" + userData.Background);
-    replaceSmartObjectContents(backgroundLayer, backgroundImage.fsName);
+// Ensure the document is compatible with JPEG format
+if (doc.mode != DocumentMode.RGB) {
+    doc.changeMode(ChangeMode.RGB);
 }
+if (doc.bitsPerChannel !== BitsPerChannelType.EIGHT) {
+    doc.bitsPerChannel = BitsPerChannelType.EIGHT;
+}
+
+
+// Ensure filename ends with .jpg
+var fileNameScan = userData.ExportTemplateFileName + "_PASSPORT_SCAN.jpg";
+/*if (!fileName.toLowerCase().endsWith(".jpg")) {
+    fileName = fileName.replace(/\.[^\.]+$/, "") + ".jpg";
+}*/
+var exportFile = new File(scriptDir.parent + "/assets/final_templates/" + fileNameScan);
+
+// Export as JPEG
+var jpegOptions = new JPEGSaveOptions();
+jpegOptions.quality = 12;
+doc.saveAs(exportFile, jpegOptions, true);
+
+doc.close(SaveOptions.DONOTSAVECHANGES);
+
+
+
+
+
+
+
+
+
+app.open(psdPhoto);
+var doc = app.activeDocument;
+
+var backgroundLayer = doc.artLayers.getByName("background");
+if (!backgroundLayer) {
+    throw new Error("Layer 'background' not found in template.");
+}
+
+// Ensure the layer is visible and active
+backgroundLayer.visible = true;
+doc.activeLayer = backgroundLayer;
+
+var backgroundImage = new File(scriptDir.parent + "/assets/psd/templates/background/" + userData.Background);
+//var backgroundImage = new File(scriptDir.parent + "/assets/psd/templates/background/background_1.jpg");
+replaceSmartObjectContentsPhoto(backgroundLayer, backgroundImage.fsName);
+
+// Replace 'generated_passport' layer
+var passportLayerPhoto = doc.artLayers.getByName("generated_passport");
+if (!passportLayerPhoto) {
+    throw new Error("Layer 'generated_passport' not found in template.");
+}
+
+// Ensure the layer is visible and active
+passportLayerPhoto.visible = true;
+doc.activeLayer = passportLayerPhoto;
+
+// Replace contents
+var passportImagePhoto = new File(scriptDir.parent + "/assets/output/" + userData.ExportFileName);
+//var passportImagePhoto = new File(scriptDir.parent + "/assets/output/CHRISTIAN_LEFEBVRE_22052025_0714.png");
+replaceSmartObjectContentsPhoto(passportLayerPhoto, passportImagePhoto.fsName);
+
+
+
 
 // Ensure the document is compatible with JPEG format
 if (doc.mode != DocumentMode.RGB) {
@@ -309,29 +370,145 @@ doc.resizeImage(
 );
 
 // Ensure filename ends with .jpg
-var fileName = userData.ExportTemplateFileName;
+var fileNamePhoto = userData.ExportTemplateFileName + "_PASSPORT_PHOTO.jpg";
 /*if (!fileName.toLowerCase().endsWith(".jpg")) {
     fileName = fileName.replace(/\.[^\.]+$/, "") + ".jpg";
 }*/
-var exportFile = new File(scriptDir.parent + "/assets/final_templates/" + fileName);
+var exportFile = new File(scriptDir.parent + "/assets/final_templates/" + fileNamePhoto);
 
 // Export as JPEG
 var jpegOptions = new JPEGSaveOptions();
 jpegOptions.quality = 12;
 doc.saveAs(exportFile, jpegOptions, true);
 
-// Additionally export as PDF if template is PASSPORT_CUT_PREP
-if (userData.Template === "PASSPORT_CUT_PREP") {
-    var pdfFile = new File(scriptDir.parent + "/assets/final_templates/" + fileName.replace(/\.[^\.]+$/, ".pdf"));
-    var pdfOptions = new PDFSaveOptions();
-    pdfOptions.pDFPreset = "highg quality latest acrobat"; // Ensure this preset exists in your Photoshop
-    pdfOptions.embedColorProfile = true;
-    pdfOptions.optimization = true;
-    pdfOptions.layers = false;
-    pdfOptions.colorConversion = false;
-    pdfOptions.preserveEditing = false;
-
-    doc.saveAs(pdfFile, pdfOptions, true);
-}
 
 doc.close(SaveOptions.DONOTSAVECHANGES);
+
+
+
+
+
+
+
+
+
+app.open(psdCut);
+var doc = app.activeDocument;
+
+// Replace 'generated_passport' layer
+var passportLayer = doc.artLayers.getByName("generated_passport");
+if (!passportLayer) {
+    throw new Error("Layer 'generated_passport' not found in template.");
+}
+
+// Ensure the layer is visible and active
+passportLayer.visible = true;
+doc.activeLayer = passportLayer;
+
+// Replace contents
+var passportImageCut = new File(scriptDir.parent + "/assets/output/" + userData.ExportFileName);
+replaceSmartObjectContents(passportLayer, passportImageCut.fsName);
+
+// Ensure the document is compatible with JPEG format
+if (doc.mode != DocumentMode.RGB) {
+    doc.changeMode(ChangeMode.RGB);
+}
+if (doc.bitsPerChannel !== BitsPerChannelType.EIGHT) {
+    doc.bitsPerChannel = BitsPerChannelType.EIGHT;
+}
+//doc.flatten();
+
+// Change resolution to 150 DPI without resampling
+doc.resizeImage(
+    undefined, // keep width
+    undefined, // keep height
+    300,       // set resolution
+    ResampleMethod.NONE // Don't resample; only change DPI
+);
+
+// Ensure filename ends with .jpg
+var fileNameCut = userData.ExportTemplateFileName + "_PASSPORT_CUT_PREP.jpg";
+/*if (!fileName.toLowerCase().endsWith(".jpg")) {
+    fileName = fileName.replace(/\.[^\.]+$/, "") + ".jpg";
+}*/
+var exportFile = new File(scriptDir.parent + "/assets/final_templates/" + fileNameCut);
+
+// Export as JPEG
+var jpegOptions = new JPEGSaveOptions();
+jpegOptions.quality = 12;
+doc.saveAs(exportFile, jpegOptions, true);
+
+var fileNameCutPdf = userData.ExportTemplateFileName + "_PASSPORT_CUT_PREP.pdf";
+var pdfFile = new File(scriptDir.parent + "/assets/final_templates/" + fileNameCutPdf);
+var pdfOptions = new PDFSaveOptions();
+pdfOptions.pDFPreset = "highg quality latest acrobat"; // Ensure this preset exists in your Photoshop
+pdfOptions.embedColorProfile = true;
+pdfOptions.optimization = true;
+pdfOptions.layers = false;
+pdfOptions.colorConversion = false;
+pdfOptions.preserveEditing = false;
+
+doc.saveAs(pdfFile, pdfOptions, true);
+
+
+doc.close(SaveOptions.DONOTSAVECHANGES);
+
+// Polyfill Array.isArray (for older ExtendScript engines)
+if (!Array.isArray) {
+    Array.isArray = function(arg) {
+        return Object.prototype.toString.call(arg) === '[object Array]';
+    };
+}
+
+// Polyfill JSON.stringify with proper pretty-printing
+if (typeof JSON === "undefined") {
+    var JSON = {};
+}
+
+if (typeof JSON.stringify !== "function") {
+    JSON.stringify = function(obj, replacer, space, depth) {
+        var indent = (typeof space === "number") ? Array(space + 1).join(" ") : "";
+        depth = depth || 0;
+        var pad = Array(depth + 1).join(indent);
+
+        if (typeof obj !== "object" || obj === null) {
+            if (typeof obj === "string") return '"' + obj + '"';
+            return String(obj);
+        }
+
+        var isArray = Array.isArray(obj);
+        var result = [];
+
+        for (var key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                var value = obj[key];
+                var valueString = (typeof value === "object" && value !== null)
+                    ? JSON.stringify(value, replacer, space, depth + 1)
+                    : (typeof value === "string" ? '"' + value + '"' : String(value));
+
+                if (isArray) {
+                    result.push(pad + indent + valueString);
+                } else {
+                    result.push(pad + indent + '"' + key + '": ' + valueString);
+                }
+            }
+        }
+
+        if (isArray) {
+            return "[\n" + result.join(",\n") + "\n" + pad + "]";
+        } else {
+            return "{\n" + result.join(",\n") + "\n" + pad + "}";
+        }
+    };
+}
+var exportData = {
+    scanFilename: fileNameScan,
+    photoFilename: fileNamePhoto,
+    cutFilename: fileNameCut,
+    cutPdfFilename: fileNameCutPdf
+};
+
+var outputFile = new File( scriptDir + "/psd_results_json/" + userData.ExportTemplateFileName + ".json");
+outputFile.open('w');
+outputFile.write(JSON.stringify(exportData, null, 2));
+outputFile.close();

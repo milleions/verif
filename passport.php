@@ -3,7 +3,7 @@ require_once __DIR__ . '/inc/db.php';
 require_once __DIR__ . '/inc/functions.php';
 
 // Set maximum execution time
-set_time_limit(240);
+set_time_limit(0);
 
 // Define paths
 $pythonPath = '/Users/kinsleykeli/rembg-env/bin/python3.11';
@@ -26,6 +26,7 @@ foreach ([$uploadDir, $outputDir, $finalDir, $sigDir, dirname(__DIR__) . '/asset
 $finalResult = '';
 $outputPath = '';
 $finalPath = '';
+$imgPath = '';
 
 if (isset($_GET['generate']) && $_GET['generate'] === 'passport') {
     echo json_encode(['value' => generateUniquePassportNumber($pdo)]);
@@ -118,17 +119,16 @@ if (isset($_GET['generate']) && $_GET['generate'] === 'serial') {
     <button type="button" onclick="generateField('serial_number', 'serial')">Generate</button><br><br>
 
     <!-- Template Selection -->
-    <label for="template">Select Template:</label>
+    <!--<label for="template">Select Template:</label>
     <select id="template" name="template" required onchange="toggleBackgroundSelector()">
         <option value="passport_scan">Passport Scan</option>
         <option value="passport_photo">Passport Photo</option>
         <option value="passport_cut_prep">Passport Cut Prep</option>
-    </select><br><br>
+    </select><br><br>-->
 
-    <input type="hidden" name="background" value=" ">
+   <!-- <input type="hidden" name="background" value=" ">-->
 
-    <!-- Background Selection (Visible only if 'Passport Photo' is selected) -->
-    <div id="background-selector" style="display:none;">
+
         <label for="background">Select Background:</label>
         <select id="background" name="background">
             <?php
@@ -140,7 +140,6 @@ if (isset($_GET['generate']) && $_GET['generate'] === 'serial') {
             }
             ?>
         </select><br><br>
-    </div>
 
     <button type="submit">Upload & Generate</button>
     <button type="reset" onclick="window.location.href=window.location.href">Reset</button>
@@ -230,8 +229,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['image'])) {
     $issuing_auth = strtoupper($_POST['issuing_auth']);
     $passport_number = strtoupper($_POST['passport_number']);
     $serial_number = strtoupper($_POST['serial_number']);
-    $template = strtoupper($_POST['template']);
-    $background = strtoupper($_POST['background']);
+    //$template = strtoupper($_POST['template']);
+    $background = $_POST['background'];
 
 
     try {
@@ -253,11 +252,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['image'])) {
     $safeNom = preg_replace('/[^a-zA-Z0-9]/', '_', $nom);
 
     $dynamicExportName = "{$safePrenom}_{$safeNom}_{$timestamp}.png";
-    $dynamicExportTemplateName = "{$safePrenom}_{$safeNom}_{$timestamp}_{$template}.jpg";
+    $dynamicExportTemplateName = "{$safePrenom}_{$safeNom}_{$timestamp}";
     $dynamicPreExportName = "{$safePrenom}_{$safeNom}_{$timestamp}";
-    $dynamicPreExportTemplateName = "{$safePrenom}_{$safeNom}_{$timestamp}_{$template}";
+    //$dynamicPreExportTemplateName = "{$safePrenom}_{$safeNom}_{$timestamp}_{$template}";
     $exportPath = dirname(__DIR__) . '/assets/output/' . $dynamicExportName;
-    $exportPathTemplate = dirname(__DIR__) . '/assets/final_templates/' . $dynamicExportTemplateName;
+    $exportPathTemplate = dirname(__DIR__) . '/assets/final_templates/' . $dynamicExportTemplateName . '.jpeg';
 
     // Expiry and MRZ
     $dob = new DateTime($date_naissance);
@@ -334,7 +333,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['image'])) {
         "Signature" => $finalSigName,
         "PhotoFileName" => $photoFileName,
         "BarcodeImage" => $barcodeOutputPath,
-        "Template" => $template,
         "Background" => $background,
         "ExportTemplateFileName" => $dynamicExportTemplateName
     ], JSON_PRETTY_PRINT));
@@ -380,9 +378,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['image'])) {
                 $escapedJsxPath = addslashes(realpath($jsxScriptPath));
                 exec("osascript -e 'tell application \"Adobe Photoshop 2025\" to do javascript file \"$escapedJsxPath\"'", $psLog, $psExit);
 
-                if (file_exists($exportPathTemplate)) {
-                    $imgPath = '../assets/final_templates/' . $dynamicExportTemplateName . '?cache=' . time();
-                    $finalResult = "<h2>✅ Final Passport Image:</h2><img src='$imgPath' style='max-width:900px;'><br><br>";
+                $psdResults = __DIR__ . '/psd_results_json/' . $dynamicExportTemplateName . '.json';
+
+
+                if (file_exists($psdResults)) {
+                    $data = json_decode(file_get_contents($psdResults), true);
+                    $imgPathScan = '../assets/final_templates/' . $data['scanFilename'] . '?cache=' . time();
+                    $imgPathPhoto = '../assets/final_templates/' . $data['photoFilename'] . '?cache=' . time();
+                    $imgPathCut = '../assets/final_templates/' . $data['cutFilename'] . '?cache=' . time();
+                    $finalResult = "<h2>✅ Final Passport Image:</h2><img src='$imgPathScan' style='max-width:400px;'><br><img src='$imgPathPhoto' style='max-width:400px;'><br><img src='$imgPathCut' style='max-width:400px;'>";
                 } else {
                     $finalResult = "<p style='color:red;'>❌ Photoshop output not found.<br><pre>" . implode("\n", $psLog) . "</pre></p>";
                 }
@@ -415,7 +419,11 @@ echo "<div style='flex: 1;'>";
 if (!empty($finalResult)) {
     echo str_replace("max-width:1000px;", "width: 1000px;", $finalResult);
 }
-echo "</div></div>"; // Close flex container
+/*echo "</div></div>"; // Close flex container
+echo "Debug: <br>";
+echo "exportPathTemplate: " . $exportPathTemplate . "<br>";
+echo 'dynamicExportTemplateName' . $dynamicExportTemplateName . '<br>';
+echo "imgPath:" . $imgPath . "<br>";*/
 ?>
 </body>
 </html>
